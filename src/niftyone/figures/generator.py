@@ -38,7 +38,7 @@ def create_generator(view: str, query: str) -> "ViewGenerator":
     def _parse_view(view: str) -> tuple[str, dict[str, Any]]:
         """Parse view for figure-specific kwargs."""
         # Match [view][(key1=value1,key2=value2,...)]
-        match = re.match(r"(\w+)\(([^=,]+=[^=,]+(?:,[^=,]+=[^=,]+)*)\)", view)
+        match = re.match(r"(\w+)\(([^()]+)\)", view)
 
         if match:
             view = match.group(1)
