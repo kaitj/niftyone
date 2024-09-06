@@ -42,7 +42,7 @@ def multi_view_frame(
     vmin, vmax = get_default_vmin_vmax(img, vmin, vmax)
 
     panels: list[Image.Image] = []
-    for coord, axis in zip(coords, axes):
+    for coord, axis in zip_longest(coords, axes):
         panel = noimg.render_slice(
             img,
             axis=axis,
