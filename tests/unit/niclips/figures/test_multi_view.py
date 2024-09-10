@@ -5,7 +5,6 @@ from pathlib import Path
 import nibabel as nib
 import numpy as np
 import pytest
-from _pytest.logging import LogCaptureFixture
 from PIL import Image
 
 from niclips.figures import multi_view as mv
@@ -37,7 +36,7 @@ class TestMultiViewFrame:
         assert isinstance(frame, Image.Image)
 
     def test_overlay_cmap_warning(
-        self, nii_3d_img: nib.Nifti1Image, caplog: LogCaptureFixture
+        self, nii_3d_img: nib.Nifti1Image, caplog: pytest.LogCaptureFixture
     ):
         mv.multi_view_frame(
             img=nii_3d_img,
