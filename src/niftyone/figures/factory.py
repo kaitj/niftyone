@@ -144,14 +144,14 @@ class View(ABC, Generic[T]):
         img = nib.nifti1.load(img_path)
         img = noimg.to_iso_ras(img)
 
-        # Handle overlays - currently only handles 1, update to handle multiple
+        # Handle overlays
         if len(records) > 1:
             overlays: list[nib.Nifti1Image] = []
             for overlay_record in records[1:]:
                 overlay_path = Path(overlay_record["finfo"]["file_path"])
                 overlay = nib.nifti1.load(overlay_path)
                 overlays.append(noimg.to_iso_ras(overlay))
-                self.view_kwargs["overlay"] = overlays.pop()
+            self.view_kwargs["overlay"] = overlays
 
         existing_entities = BIDSEntities.from_dict(records[0]["ent"])
         out_path = existing_entities.with_update(self.entities).to_path(prefix=out_dir)
