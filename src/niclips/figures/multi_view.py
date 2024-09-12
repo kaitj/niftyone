@@ -46,7 +46,7 @@ def multi_view_frame(
     vmin, vmax = get_default_vmin_vmax(img, vmin, vmax)
 
     panels: list[Image.Image] = []
-    for coord, axis in zip_longest(coords, axes):
+    for coord, axis in zip(coords, axes):
         panel = noimg.render_slice(
             img,
             axis=axis,
@@ -71,9 +71,10 @@ def multi_view_frame(
                     coord=coord,
                     height=panel_height,
                     cmap=ov_cmap or "turbo",
+                    annotate=False,
                     fontsize=fontsize,
                 )
-                panel = noimg.overlay(panel, panel_overlay, alpha - alpha)
+                panel = noimg.overlay(panel, panel_overlay, alpha)
 
         panels.append(panel)
 
@@ -113,9 +114,9 @@ def three_view_frame(
         overlay = [overlay]
 
     if len(overlay) > 0:
-        for idx, ov in enumerate(overlay):
+        for ov_idx, ov in enumerate(overlay):
             if ov.ndim == 4:
-                overlay[idx] = noimg.index_img(ov, idx=idx)
+                overlay[ov_idx] = noimg.index_img(ov, idx=idx)
 
     if coord is None:
         coord = get_default_coord(img)
@@ -207,11 +208,11 @@ def slice_video(
         overlay = [overlay]
 
     if len(overlay) > 0:
-        for idx, ov in enumerate(overlay):
+        for ov_idx, ov in enumerate(overlay):
             if ov.ndim == 4:
                 ov = noimg.index_img(ov, idx=idx)
                 check_iso_ras(ov)
-                overlay[idx] = ov
+                overlay[ov_idx] = ov
 
     vmin, vmax = get_default_vmin_vmax(img, vmin, vmax)
 
