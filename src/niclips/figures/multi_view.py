@@ -23,7 +23,7 @@ def multi_view_frame(
     axes: list[int],
     vmin: float | None = None,
     vmax: float | None = None,
-    overlay: nib.Nifti1Image | list[nib.Nifti1Image] = [],
+    overlay: nib.Nifti1Image | list[nib.Nifti1Image] | None = None,
     nrows: int = 1,
     panel_height: int | None = 256,
     cmap: str = "gray",
@@ -36,15 +36,13 @@ def multi_view_frame(
     check_3d(img)
     check_iso_ras(img)
 
-    if isinstance(overlay, nib.Nifti1Image):
-        overlay = [overlay]
-
+    overlay = [overlay] if isinstance(overlay, nib.Nifti1Image) else (overlay or [])
     if len(overlay) > 0:
         for ov in overlay:
             check_3d(ov)
             check_iso_ras(ov)
-    vmin, vmax = get_default_vmin_vmax(img, vmin, vmax)
 
+    vmin, vmax = get_default_vmin_vmax(img, vmin, vmax)
     panels: list[Image.Image] = []
     for coord, axis in zip(coords, axes):
         panel = noimg.render_slice(
@@ -96,7 +94,7 @@ def three_view_frame(
     idx: int | None = 0,
     vmin: float | None = None,
     vmax: float | None = None,
-    overlay: nib.Nifti1Image | list[nib.Nifti1Image] = [],
+    overlay: nib.Nifti1Image | list[nib.Nifti1Image] | None = None,
     panel_height: int | None = 256,
     cmap: str = "gray",
     overlay_cmap: list[str] = ["turbo"],
@@ -110,9 +108,7 @@ def three_view_frame(
         img = noimg.index_img(img, idx=idx)
     assert isinstance(img, nib.Nifti1Image)
 
-    if isinstance(overlay, nib.Nifti1Image):
-        overlay = [overlay]
-
+    overlay = [overlay] if isinstance(overlay, nib.Nifti1Image) else (overlay or [])
     if len(overlay) > 0:
         for ov_idx, ov in enumerate(overlay):
             if ov.ndim == 4:
@@ -146,7 +142,7 @@ def three_view_video(
     coord: tuple[float, float, float] | None = None,
     vmin: float | None = None,
     vmax: float | None = None,
-    overlay: nib.Nifti1Image | list[nib.Nifti1Image] = [],
+    overlay: nib.Nifti1Image | list[nib.Nifti1Image] | None = None,
     panel_height: int | None = 256,
     cmap: str = "gray",
     fontsize: int = 14,
@@ -155,8 +151,7 @@ def three_view_video(
     """Save a three view panel video."""
     check_4d(img)
 
-    if isinstance(overlay, nib.Nifti1Image):
-        overlay = [overlay]
+    overlay = [overlay] if isinstance(overlay, nib.Nifti1Image) else (overlay or [])
 
     if coord is None:
         coord = get_default_coord(img)
@@ -189,7 +184,7 @@ def slice_video(
     idx: int | None = 0,
     vmin: float | None = None,
     vmax: float | None = None,
-    overlay: nib.Nifti1Image | list[nib.Nifti1Image] = [],
+    overlay: nib.Nifti1Image | list[nib.Nifti1Image] | None = None,
     panel_height: int | None = 256,
     cmap: str = "gray",
     overlay_cmap: list[str] = ["brg"],
@@ -204,9 +199,7 @@ def slice_video(
     assert isinstance(img, nib.Nifti1Image)
     check_iso_ras(img)
 
-    if isinstance(overlay, nib.Nifti1Image):
-        overlay = [overlay]
-
+    overlay = [overlay] if isinstance(overlay, nib.Nifti1Image) else (overlay or [])
     if len(overlay) > 0:
         for ov_idx, ov in enumerate(overlay):
             if ov.ndim == 4:
