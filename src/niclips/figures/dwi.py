@@ -41,7 +41,6 @@ def _get_bval_indices(bvals: np.ndarray, bval: int) -> np.ndarray:
 def visualize_qspace(
     dwi: nib.Nifti1Image,
     out: StrPath | None = None,
-    *,
     thresh: int = 10,
     figure: str | None = None,
 ) -> FuncAnimation:
@@ -93,7 +92,6 @@ def visualize_qspace(
 def three_view_per_shell(
     dwi: nib.Nifti1Image,
     out: StrPath | None = None,
-    *,
     thresh: int = 10,
     replace_str: str = "bval",
 ) -> list[nib.Nifti1Image]:
@@ -125,7 +123,6 @@ def three_view_per_shell(
 def signal_per_volume(
     dwi: nib.Nifti1Image,
     out: StrPath | None = None,
-    *,
     fontsize: int = 14,
     figure: str | None = None,
 ) -> None:

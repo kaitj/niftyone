@@ -62,7 +62,6 @@ def cluster_timeseries(
 def carpet_plot(
     bold: nib.Nifti1Image,
     out: StrPath | None = None,
-    *,
     label: nib.Nifti1Image | None = None,
     n_voxels: int = 2000,
     seed: int = 42,
@@ -157,7 +156,6 @@ def carpet_plot(
 def bold_mean_std(
     bold: nib.Nifti1Image,
     out: StrPath | None = None,
-    *,
     std_vmax_ratio: float = 0.1,
     figure: str | None = None,
     **kwargs,
