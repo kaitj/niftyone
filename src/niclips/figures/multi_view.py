@@ -145,6 +145,7 @@ def three_view_video(
     overlay: nib.Nifti1Image | list[nib.Nifti1Image] | None = None,
     panel_height: int | None = 256,
     cmap: str = "gray",
+    overlay_cmap: list[str] = ["turbo"],
     fontsize: int = 14,
     figure: str | None = None,
 ) -> None:
@@ -168,6 +169,7 @@ def three_view_video(
                 overlay=overlay,
                 panel_height=panel_height,
                 cmap=cmap,
+                overlay_cmap=overlay_cmap,
                 fontsize=fontsize,
             )
             frame = noimg.annotate(
