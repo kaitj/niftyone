@@ -30,7 +30,7 @@ def multi_view_frame(
     overlay_cmap: list[str] = ["turbo"],
     alpha: float = 0.5,
     fontsize: int = 14,
-    figure: str | None = None,
+    **kwargs,
 ) -> Image.Image:
     """Construct a multi view image panel. Returns a PIL Image."""
     check_3d(img)
@@ -89,7 +89,7 @@ def multi_view_frame(
 def three_view_frame(
     img: NiftiLike,
     out: StrPath | None = None,
-    coord: tuple[float, float, float] | None = None,
+    coord: Coord | None = None,
     idx: int | None = 0,
     vmin: float | None = None,
     vmax: float | None = None,
@@ -99,7 +99,7 @@ def three_view_frame(
     overlay_cmap: list[str] = ["turbo"],
     alpha: float = 0.5,
     fontsize: int = 14,
-    figure: str | None = None,
+    **kwargs,
 ) -> Image.Image:
     """Construct a three view image panel. Returns a PIL Image."""
     check_3d_4d(img)
@@ -145,7 +145,7 @@ def three_view_video(
     cmap: str = "gray",
     overlay_cmap: list[str] = ["turbo"],
     fontsize: int = 14,
-    figure: str | None = None,
+    **kwargs,
 ) -> None:
     """Save a three view panel video."""
     check_4d(img)
@@ -189,7 +189,7 @@ def slice_video(
     overlay_cmap: list[str] = ["brg"],
     fontsize: int = 14,
     alpha: float = 0.3,
-    figure: str | None = None,
+    **kwargs,
 ) -> None:
     """Save video scrolling through range of slices."""
     check_3d_4d(img)

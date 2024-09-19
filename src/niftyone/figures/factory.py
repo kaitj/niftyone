@@ -19,7 +19,7 @@ T = TypeVar("T", bound="View")
 view_registry: dict[str, type["View"]] = {}
 
 
-def register(name: str) -> Callable[[type[T]], type[T]]:
+def register(name: str) -> Callable:
     """Function to register view to registry."""
 
     def decorator(cls: type[T]) -> type[T]:
@@ -35,7 +35,7 @@ def create_view(
     join_entities: list[str],
     queries: list[str],
 ) -> "View":
-    """Function to create generator."""
+    """Function to create view."""
     view_kwargs = view_kwargs or {}
     try:
         view_cls = view_registry[view]
@@ -101,13 +101,6 @@ class View(ABC, Generic[T]):
             records = [table.nested.loc[ind] for ind in inds]
             self.create(records=records, out_dir=out_dir, overwrite=overwrite)
 
-    def _figure_name(self) -> None:
-        """Helper function to grab figure entity in view kwarg and update entities."""
-        if "figure" in self.view_kwargs:
-            assert self.entities
-            self.entities["extra_entities"]["figure"] = self.view_kwargs["figure"]
-            # del self.view_kwargs["figure"]
-
     def _load_image(self, record: pd.Series, log: bool = False) -> nib.Nifti1Image:
         """Helper to load image."""
         img_path = Path(record["finfo"]["file_path"])
@@ -119,16 +112,21 @@ class View(ABC, Generic[T]):
 
     def _load_overlays(self, overlay_records: list[pd.Series]) -> list[nib.Nifti1Image]:
         """Helper to load overlays."""
-        overlays = []
-        for overlay_record in overlay_records:
-            overlays.append(self._load_image(record=overlay_record))
-        return overlays
+        return [
+            self._load_image(record=overlay_record)
+            for overlay_record in overlay_records
+        ]
 
-    def _update_out_path(self, record: pd.Series, out_dir: Path) -> Path:
+    def _figure_out_path(self, record: pd.Series, out_dir: Path) -> Path:
         """Generates the output figure file path."""
-        self._figure_name()
-        existing_entities = BIDSEntities.from_dict(record["ent"])
-        out_path = existing_entities.with_update(self.entities).to_path(prefix=out_dir)
+        figure_value = self.view_kwargs.get("figure")
+        figure_entities = {
+            **record["ent"].to_dict(),
+            **(self.entities if self.entities is not None else {}),
+            **({"figure": figure_value} if figure_value is not None else {}),
+        }
+
+        out_path = BIDSEntities.from_dict(figure_entities).to_path(prefix=out_dir)
         out_path.parent.mkdir(exist_ok=True, parents=True)
         return out_path
 
@@ -148,7 +146,7 @@ class View(ABC, Generic[T]):
             if len(records) > 1
             else None
         )
-        out_path = self._update_out_path(records[0], out_dir)
+        out_path = self._figure_out_path(records[0], out_dir)
 
         if not out_path.exists() or overwrite:
             logging.info("Creating %s", out_path)

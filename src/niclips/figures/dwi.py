@@ -42,7 +42,7 @@ def visualize_qspace(
     dwi: nib.Nifti1Image,
     out: StrPath | None = None,
     thresh: int = 10,
-    figure: str | None = None,
+    **kwargs,
 ) -> FuncAnimation:
     """Visualize diffusion gradients in q-space."""
     # Grab paths and check existence
@@ -124,7 +124,7 @@ def signal_per_volume(
     dwi: nib.Nifti1Image,
     out: StrPath | None = None,
     fontsize: int = 14,
-    figure: str | None = None,
+    **kwargs,
 ) -> None:
     """Generate plot of signal per volume (side-by-side)."""
     signal = np.mean(dwi.dataobj, axis=(0, 1, 2))
