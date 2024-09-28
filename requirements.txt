@@ -2,6 +2,7 @@ av==12.3.0
 bids2table==0.1.0
 elbow==0.1.1
 fiftyone==0.25.0
+indexed_gzip==1.8.7
 matplotlib==3.9.1
 nibabel==5.2.1
 nilearn==0.10.4

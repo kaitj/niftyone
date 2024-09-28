@@ -27,6 +27,7 @@ dependencies = [
   "bids2table",
   "elbow",
   "fiftyone",
+  "indexed_gzip",
   "matplotlib",
   "nibabel",
   "nilearn",
