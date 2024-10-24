@@ -3,7 +3,6 @@ import logging
 import matplotlib as mpl
 import nibabel as nib
 import numpy as np
-from nibabel.processing import resample_to_output
 from PIL import Image
 
 from niclips.typing import NiftiLike
@@ -107,13 +106,32 @@ def to_ras(img: nib.nifti1.Nifti1Image) -> nib.nifti1.Nifti1Image:
         img.set_filename(img_path)
     return img
 
+
 def to_iso(
     img: nib.nifti1.Nifti1Image, target_res: int | None = None
 ) -> nib.nifti1.Nifti1Image:
-    """Convert 3D nifti image to isotropic resolution."""
-    if target_res is not None:
-        voxel_sizes = [target_res] * len(img.shape)
-    else:
-        voxel_sizes = [np.min(img.header["pixdim"][1:4])] * len(img.shape)
-    
-    return resample_to_output(img, voxel_sizes=voxel_sizes)
+    """Update affine + zoom for isotropic resolution."""
+    orig_scale = np.linalg.norm(img.affine[:3, :3], axis=0)
+    new_scale = (
+        target_res
+        if target_res is not None
+        else min([np.linalg.norm(img.affine[idx, :3]) for idx in range(3)])
+    )
+    norm_affine = img.affine[:3, :3] / orig_scale
+    img.affine[:3, :3] = norm_affine * new_scale
+
+    scale_ratio = new_scale / orig_scale
+    img.affine[:3, 3] = img.affine[:3, 3] * scale_ratio
+
+    # Update zoom
+    new_zooms = tuple(np.abs(np.diag(img.affine)[:3])) + (img.header.get_zooms()[-1],)
+    img.header.set_zooms(new_zooms)
+
+    return img
+
+    # if target_res is not None:
+    #     voxel_sizes = [target_res] * len(img.shape)
+    # else:
+    #     voxel_sizes = [np.min(img.header["pixdim"][1:4])] * len(img.shape)
+
+    # return resample_to_output(img, voxel_sizes=voxel_sizes)
